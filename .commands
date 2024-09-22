@@ -1,0 +1,1 @@
+$env:DJANGO_SETTINGS_MODULE="doctor_portal.settings_local"
