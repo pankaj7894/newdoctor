@@ -46,3 +46,80 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.name
+
+class State(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.CharField(max_length=5)
+
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    name = models.CharField(max_length=255)
+    states = models.ManyToManyField(State, related_name='cities')
+
+    def __str__(self):
+        return self.name
+
+class Location(models.Model):
+    name = models.CharField(max_length=255)
+    cities = models.ManyToManyField(City, related_name='locations')
+
+    def __str__(self):
+        return self.name
+    
+
+class Services(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+class Specialization(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+class University(models.Model):
+    name = models.CharField(max_length=255)
+    state = models.ForeignKey(State, on_delete=models.DO_NOTHING, related_name='universities')
+    city = models.ForeignKey(City, on_delete=models.DO_NOTHING, related_name='universities')
+    pincode = models.CharField(max_length=6)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+class college(models.Model):
+    name = models.CharField(max_length=255)
+    state = models.ForeignKey(State, on_delete=models.DO_NOTHING, related_name='colleges')
+    city = models.ForeignKey(City, on_delete=models.DO_NOTHING, related_name='colleges')
+    pincode = models.CharField(max_length=6)
+    affiliation_type = models.CharField(max_length=255, choices=[('govt', 'Government'), ('private', 'Private'),('deemed', 'Deemed')])
+    affliated_to = models.ForeignKey(University, on_delete=models.DO_NOTHING, related_name='colleges')
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+class degree(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+class Memberships(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+class Registration(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
