@@ -17,6 +17,9 @@ INSTALLED_APPS = [
     'configurations',
     'rest_framework',  # for DRF
     'drf_yasg',  # for Swagger
+    'listing',
+    'appointment',
+    
 
 ]
 
