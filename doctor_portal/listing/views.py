@@ -4,9 +4,10 @@ from django.forms import ValidationError
 from rest_framework import generics
 from .serializers import ListingSerializer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.mixins import UpdateModelMixin
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .models import Availability, Unavailability, Review, Listing
 from .serializers import (
@@ -21,7 +22,7 @@ class ListingListCreateView(generics.ListCreateAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def perform_create(self, serializer):
         # Set the user to the logged-in user during creation
@@ -32,8 +33,15 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, Up
     serializer_class = ListingSerializer
     lookup_field = 'pk'
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
+    def get(self, request, *args, **kwargs):
+        # Print the request headers to console or log
+        print("Request Headers:", request.headers)
+        
+        # Call the parent class's get method
+        return super().get(request, *args, **kwargs)
+    
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Listing.objects.filter(user=self.request.user)
@@ -57,7 +65,7 @@ class ListingRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, Up
 class AvailabilityListCreateView(generics.ListCreateAPIView):
     serializer_class = AvailabilitySerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def perform_create(self, serializer):
         listing = Listing.objects.get(pk=self.kwargs['listing_id'])
@@ -73,7 +81,7 @@ class AvailabilityRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
     queryset = Availability.objects.all()
     serializer_class = AvailabilitySerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def update(self, request, *args, **kwargs):
         # Block PUT requests explicitly
@@ -92,7 +100,7 @@ class AvailabilityRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
 class UnavailabilityListCreateView(generics.ListCreateAPIView):
     serializer_class = UnavailabilitySerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -108,7 +116,7 @@ class UnavailabilityRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIV
     queryset = Unavailability.objects.all()
     serializer_class = UnavailabilitySerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def update(self, request, *args, **kwargs):
         # Block PUT requests explicitly
@@ -127,7 +135,7 @@ class UnavailabilityRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIV
 class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -144,7 +152,7 @@ class ReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, Upd
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     
     def update(self, request, *args, **kwargs):
         # Block PUT requests explicitly
