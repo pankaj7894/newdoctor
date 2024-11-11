@@ -24,6 +24,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     USER_TYPE_CHOICES = [
         ('doctor', 'Doctor'),
+        ('patient', 'Patient'),
         ('hospital', 'Hospital'),
         ('clinic', 'Clinic'),
         ('front_desk', 'Front Desk'),
